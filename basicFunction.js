@@ -1,3 +1,5 @@
+var canvas = document.getElementById("canvasTag");
+var c = canvas.getContext("2d"); //c means context
 
 var inputPos={x:0,y:0};
 canvas.addEventListener('mousemove', function(evt) {
@@ -81,6 +83,14 @@ document.addEventListener('mouseup', function(event){
 	liftedMouse = true;
 });
 
+function AABBCollision(x1,y1,w1,h1,x2,y2,w2,h2){
+    if (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2){
+        return true;
+    }else{
+        return false;
+    }
+        
+}
 
 function collidePoint(point, rect){
 	if(point[0] > rect[0] && point[0] < rect[0] + rect[2] && point[1] > rect[1] && point[1] < rect[1] + rect[3]){
