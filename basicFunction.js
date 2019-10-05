@@ -1,0 +1,193 @@
+
+var inputPos={x:0,y:0};
+canvas.addEventListener('mousemove', function(evt) {
+	inputPos = getinputPos(canvas, evt);
+}, false);
+
+function getinputPos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+		x: evt.clientX - rect.left,
+		y: evt.clientY - rect.top
+	};
+};
+
+canvas.addEventListener("ontouchmove", function(evt){
+	inputPos = getinputPos(canvas, evt);
+	evt.preventDefault();
+	//console.log("touch move");
+}, false);
+canvas.addEventListener("ontouchstart", function(evt){
+	inputPos = getinputPos(canvas, evt);
+	evt.preventDefault();
+	//console.log("touch start");
+}, false);
+
+var Keys = {"left":false, "right":false, "up":false, "down":false, "space":false, "esc":false};
+
+document.addEventListener('keydown', function(event) {
+		if(event.keyCode === 37 || event.keyCode === 65) { // left
+			Keys["left"] = true;
+		}
+		else if(event.keyCode === 39 || event.keyCode === 68) { // right
+			Keys["right"] = true;
+		}
+		else if(event.keyCode === 38 || event.keyCode === 87){ // up
+			Keys["up"] = true;
+		}
+		else if(event.keyCode === 40 || event.keyCode === 83){ // down
+			Keys["down"] = true;
+		}
+		else if(event.keyCode === 32){
+			Keys["space"] = true;
+		}else if(event.keyCode === 27){
+			Keys["esc"] = true;
+		}
+	}
+);
+document.addEventListener('keyup', function(event) {
+		if(event.keyCode === 37 || event.keyCode === 65) { // left
+			Keys["left"] = false;
+		}
+		else if(event.keyCode === 39 || event.keyCode === 68) { // right
+			Keys["right"] = false;
+		}
+		else if(event.keyCode === 38 || event.keyCode === 87){ // up
+			Keys["up"] = false;
+		}
+		else if(event.keyCode === 40 || event.keyCode === 83){ // down
+			Keys["down"] = false;
+		}
+		else if(event.keyCode === 32){
+			Keys["space"] = false;
+		}
+		else if(event.keyCode === 27){
+			Keys["esc"] = false;
+			liftedEsc = true;
+		}
+	}
+);
+
+mouseButtons = [false, false, false];
+document.addEventListener('mousedown', function(event){
+	mouseButtons[0] = true;
+});
+
+var liftedMouse = false;
+var liftedEsc = false;
+
+document.addEventListener('mouseup', function(event){
+	mouseButtons[0] = false;
+	liftedMouse = true;
+});
+
+
+function collidePoint(point, rect){
+	if(point[0] > rect[0] && point[0] < rect[0] + rect[2] && point[1] > rect[1] && point[1] < rect[1] + rect[3]){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function blendCols(col1, col2, per){
+	var R = col1[0] + (col2[0] - col1[0])*per;
+	var G = col1[1] + (col2[1] - col1[1])*per;
+	var B = col1[2] + (col2[2] - col1[2])*per;
+	return [R, G, B];
+}
+
+class image{
+	constructor(imageLocation){
+		this.img = new Image();
+		this.img.src=imageLocation;
+	}	
+
+	drawImg(X,Y,W,H, alpha){
+		c.globalAlpha = alpha;
+		c.drawImage(this.img, X,Y, W,H);
+		c.globalAlpha = 1;
+	}
+
+	drawRotatedImg(X, Y, W, H, alpha, rotation, rotateAroundX = 0, rotateAroundY = 0){
+		c.save();
+		c.translate(X, Y);
+		c.rotate(rotation);
+		this.drawImg(-rotateAroundX, -rotateAroundY, W, H, alpha);
+		c.restore();
+	}
+}
+
+
+function midPoint(point1, point2, per){
+	var x = point1[0] + (point2[0] - point1[0])*per;
+	var y = point1[1] + (point2[1] - point1[1])*per;
+	return [x, y];
+}
+
+function drawRotatedRect(X, Y, W, H, colour, rotation){
+	c.save();
+	c.translate(X, Y);
+	c.rotate(rotation);
+	c.fillStyle = colour;
+	c.beginPath();
+	c.rect(-W/2,-H/2, W, H);
+	c.fill();
+	c.restore();
+}
+
+function showText(text, X, Y, Size, colour = "rgb(0, 0, 0)", bold = false){
+	c.beginPath();
+	if(bold === true){
+		c.font = "bold "+Size+"px Arial";
+	}
+	else{
+		c.font = Size+"px Arial"
+	}
+	c.textAlign = "center";
+	c.fillStyle=colour;
+	c.fillText(text, X, Y);
+}
+
+function onScreen(X, Y){
+	if(X > 0 && X < canvas.width && Y > 0 && Y < canvas.width){
+		return true;
+	} else{
+		return false;
+	}
+}
+
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke == 'undefined') {
+	stroke = true;
+  }
+  if (typeof radius === 'undefined') {
+	radius = 5;
+  }
+  if (typeof radius === 'number') {
+	radius = {tl: radius, tr: radius, br: radius, bl: radius};
+  } else {
+	var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+	for (var side in defaultRadius) {
+	  radius[side] = radius[side] || defaultRadius[side];
+	}
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+	ctx.fill();
+  }
+  if (stroke) {
+	ctx.stroke();
+  }
+
+}
