@@ -25,7 +25,7 @@ canvas.addEventListener("ontouchstart", function(evt){
 	//console.log("touch start");
 }, false);
 
-var Keys = {"left":false, "right":false, "up":false, "down":false, "space":false, "esc":false};
+var Keys = {"left":false, "right":false, "up":false, "down":false, "space":false, "esc":false,"x":false};
 
 document.addEventListener('keydown', function(event) {
 		if(event.keyCode === 37 || event.keyCode === 65) { // left
@@ -44,9 +44,24 @@ document.addEventListener('keydown', function(event) {
 			Keys["space"] = true;
 		}else if(event.keyCode === 27){
 			Keys["esc"] = true;
+		}else if(event.keyCode === 88){
+			Keys["x"] = true;
 		}
 	}
 );
+function drawRect(x,y,w,h,col,fill = false){
+    
+    c.fillStyle = col;
+    c.strokeStyle = col;
+    //c.fillRect(x,y,w,h);
+    c.beginPath();
+    c.rect(x,y,w,h);
+    if (fill){
+        c.fill();
+    }
+    c.stroke();
+    c.closePath();
+}
 document.addEventListener('keyup', function(event) {
 		if(event.keyCode === 37 || event.keyCode === 65) { // left
 			Keys["left"] = false;
@@ -66,6 +81,8 @@ document.addEventListener('keyup', function(event) {
 		else if(event.keyCode === 27){
 			Keys["esc"] = false;
 			liftedEsc = true;
+		}else if(event.keyCode === 88){
+			Keys["x"] = false;
 		}
 	}
 );

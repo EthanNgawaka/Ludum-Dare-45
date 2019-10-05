@@ -3,56 +3,41 @@ var canvas = document.getElementById("canvasTag");
 var c = canvas.getContext("2d"); //c means context
 W = 800;
 H = 600;
-//MOVE THIS TO PLAYER.JS EVENTUALLY//
-class Player{
-	constructor(){
-		this.x = 0;
-		this.y = 0;
-		this.w = 10;
-		this.h = 10;
-		this.canmove = true;
-		this.movementtimer = 0;
-	}
-	draw(){
-		roundRect(c,this.x,this.y,this.w,this.h,4,true,false);
-	}
-	input(){
-		if (Keys["right"] && this.canmove){
-			this.x += 10;
-		}
-		else if (Keys["left"] && this.canmove){
-			this.x -= 10;
-		}
-		else if (Keys["up"] && this.canmove){
-			this.y -= 10;
-		}
-		else if (Keys["down"] && this.canmove){
-			this.y += 10;
-		}
-		if (Keys["right"] || Keys["left"] || Keys["up"] || Keys["down"]){
-			this.canmove = false;
-		}
-		if (!this.canmove){
-			this.movementtimer++;
-			if (this.movementtimer > 10){
-				this.movementtimer = 0;
-				this.canmove = true;
-			}
-		}
-	}
-	update(){
-		this.input();
-		this.draw();
-	}
-}
-//---------------------------------//
-
-
+var campos = [0,0];
+var tcampos = [0,0];
+var shakepos = [0,0];
+var shake = false;
+var shaketimes = 0;
 player = new Player();
+
+
 function update(){
+	//Camera handling//
+    tcampos[0] += (Math.round(player.x) - campos[0] - W/2) / 5 + shakepos[0];
+    tcampos[1] += (Math.round(player.y) - campos[1] - H/2) / 5 + shakepos[1];
+    campos = [Math.round(tcampos[0]), Math.round(tcampos[1])];
+    //Screenshake//
+    if (shake){
+        if (Math.random() > 0.5){
+            shakepos[0] = -(Math.random()*3);
+        }else{
+            shakepos[0] = (Math.random()*3);
+        }
+        if (Math.random() > 0.5){
+            shakepos[1] = -(Math.random()*3);
+        }else{
+            shakepos[1] = (Math.random()*3);
+        }
+        shaketimes++;
+
+        if (shaketimes > 15){
+            shake = false;
+			shaketimes = 0;
+			shakepos = [0,0];
+        }
+    }
 	//Refresh screen//
-	drawRotatedRect(0+W/2,0+H/2,W,H,"white",0);
-	//--------------//
+	drawRect(0,0,W,H,"white",true);
 	liftedMouse = false;
 	liftedEsc = false;
 	player.update();
