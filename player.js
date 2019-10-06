@@ -18,9 +18,12 @@ class Player{
 		this.dashpos = [0,0];
 		this.color = "black";
 		this.dashbar = this.w;
+		this.sprite = new image("/assets/player1.png");
+		this.hp = 10;
 	}
 	draw(){
-		drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,this.color,true);
+		this.sprite.drawImg(this.x-campos[0],this.y-campos[1],40,40,100);
+		//drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,this.color,true);
 	}
 	input(walls){
 		
@@ -34,13 +37,15 @@ class Player{
             if (Math.hypot(this.x-campos[0]+20 - mousePos.x,this.y +20- mousePos.y-campos[1]) < 150){
                 this.dashpos = [mousePos.x+campos[0]-20,mousePos.y+campos[1]-20];
                 drawLine(this.x- campos[0]+20,this.y- campos[1]+20,mousePos.x,mousePos.y);
-                drawRect(this.dashpos[0]-campos[0],this.dashpos[1]-campos[1],40,40,this.color);
+				this.sprite.drawImg(this.dashpos[0]-campos[0],this.dashpos[1]-campos[1],40,40,0.5);
+				//drawRect(this.dashpos[0]-campos[0],this.dashpos[1]-campos[1],40,40,this.color);
             }else{
                 this.radians = Math.atan2(mousePos.y-20+campos[1]-this.y,mousePos.x-20+campos[0]-this.x);
                 //console.log(this.radians);
                 this.dashpos = [this.x + Math.cos(this.radians)*150,this.y + Math.sin(this.radians)*150];
                 drawLine(this.x- campos[0]+20,this.y- campos[1]+20,this.dashpos[0]+20-campos[0],this.dashpos[1]+20-campos[1]);
-                drawRect(this.dashpos[0]-campos[0],this.dashpos[1]-campos[1],40,40,this.color);
+				//drawRect(this.dashpos[0]-campos[0],this.dashpos[1]-campos[1],40,40,this.color);
+				this.sprite.drawImg(this.dashpos[0]-campos[0],this.dashpos[1]-campos[1],40,40,0.5);
             }
             
         }
@@ -73,7 +78,9 @@ class Player{
             }
 		}
 		c.save();
+		drawRect(this.x-campos[0],this.y-campos[1]-20,40,10,"red",true);
 		drawRect(this.x-campos[0],this.y-campos[1]-20,this.dashbar,10,"#56ED97",true);
+
 		c.restore();
         //-------//
 		/*
