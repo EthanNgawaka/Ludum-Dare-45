@@ -1,9 +1,6 @@
 var canvas = document.getElementById("canvasTag");
 var c = canvas.getContext("2d"); //c means context
 var mousePos={x:0,y:0};
-canvas.addEventListener('mousemove', function(evt) {
-	inputPos = getinputPos(canvas, evt);
-}, false);
 
 canvas.addEventListener('mousemove', function(evt) {
 	mousePos = getMousePos(canvas, evt);

@@ -18,7 +18,7 @@ class Player{
 		this.dashpos = [0,0];
 		this.color = "black";
 		this.dashbar = this.w;
-		this.sprite = new image("/assets/player1.png");
+		this.sprite = new image("assets/player1.png");
 		this.hp = 10;
 	}
 	draw(){
