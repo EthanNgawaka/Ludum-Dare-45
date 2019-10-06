@@ -15,13 +15,15 @@ class Player{
 		this.dash = true;
         this.dashcooldown = 5;
         this.dashing = false;
-        this.dashpos = [0,0];
+		this.dashpos = [0,0];
+		this.color = "black";
+		this.dashbar = this.w;
 	}
 	draw(){
-		drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,"black",true);
+		drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,this.color,true);
 	}
 	input(walls){
-		console.log(mousePos);
+		
 		if (mouseButtons[2] && this.dash && !this.dashing){
             this.dashing = true;
         }
@@ -69,7 +71,10 @@ class Player{
                 this.dash = true;
                 this.dashing = false;
             }
-        }
+		}
+		c.save();
+		drawRect(this.x-campos[0],this.y-campos[1]-20,this.dashbar,10,"#56ED97",true);
+		c.restore();
         //-------//
 		/*
 		if (Keys["x"] && this.swordtimer == 20){
