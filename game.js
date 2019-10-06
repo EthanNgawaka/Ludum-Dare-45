@@ -8,7 +8,7 @@ var tcampos = [0,0];
 var shakepos = [0,0];
 var shake = false;
 var shaketimes = 0;
-var wallsonscreen = [[100,100,100,100]];
+var wallsonscreen = [[100,100,100,100],[-400,-400,400,800]];
 player = new Player();
 
 document.addEventListener('contextmenu', event => event.preventDefault());
@@ -44,6 +44,9 @@ function update(){
     player.update(wallsonscreen);
     for (var x =0; x < wallsonscreen.length; x++){
         drawRect(wallsonscreen[x][0]-campos[0],wallsonscreen[x][1]-campos[1],wallsonscreen[x][2],wallsonscreen[x][3],"black",true);
+    }
+    for (var x = 0; x < player.hp; x++){
+        roundRect(c,x*15+20,20,20,40,10,true,true,"red");
     }
 }
 

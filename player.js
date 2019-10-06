@@ -1,7 +1,7 @@
 class Player{
 	constructor(){
-		this.x = 0;
-		this.y = 0;
+		this.x = 40;
+		this.y = 40;
 		this.w = 40;
 		this.h = 40;
 		this.canmove = true;
@@ -20,13 +20,57 @@ class Player{
 		this.dashbar = this.w;
 		this.sprite = new image("assets/player1.png");
 		this.hp = 10;
+		this.frame = 1;
+		this.animationtimer= 10;
+		this.sworddist = 40;
+		this.sHeight = 10;
+		this.jumpcount = this.sHeight;
+		this.isswinging = false;
+		this.swordpos = [];
 	}
 	draw(){
-		this.sprite.drawImg(this.x-campos[0],this.y-campos[1],40,40,100);
+		this.animationtimer --;
+		this.sprite.img.src = "assets/player"+this.frame.toString()+".png"
+		if (this.animationtimer < 0){
+			this.frame+=1;
+			
+			if (this.frame > 4){
+				this.frame = 1;
+				
+			}
+			this.animationtimer = 10;
+		}
+		
+		//this.sprite.drawImg(this.x,this.y,this.w,this.h,1,128,32,32,32,1,campos);
+		//c.drawImage("assets/player1.png",this.framex,0,32,32,this.x-campos[0],this.y-campos[1],40,40)
+		this.sprite.drawImg(this.x-campos[0],this.y-campos[1],40,40,1);
 		//drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,this.color,true);
 	}
 	input(walls){
-		
+		this.radians = Math.atan2(mousePos.y-20+campos[1]-this.y,mousePos.x-20+campos[0]-this.x);
+		this.swordpos = [this.x + Math.cos(this.radians)*this.sworddist,this.y+ Math.sin(this.radians)*this.sworddist];
+		drawRect(this.swordpos[0]+10-campos[0],this.swordpos[1]+10-campos[1],20,20,"grey",true);
+	
+		if(mouseButtons[0] && !this.isswinging){
+			this.isswinging = true;
+		}
+		if (this.isswinging){
+			if (this.jumpcount > -this.sHeight){
+				if (this.jumpcount < 0){
+					this.sworddist -= (this.jumpcount ** 2) / 6;
+				}else{
+					this.sworddist += (this.jumpcount ** 2) / 6;
+				}
+				this.jumpcount--;
+			}else{
+				this.isswinging = false;
+				this.jumpcount = this.sHeight;
+				this.sworddist = 40;
+			}
+		}
+
+
+
 		if (mouseButtons[2] && this.dash && !this.dashing){
             this.dashing = true;
         }

@@ -1,5 +1,5 @@
 var canvas = document.getElementById("canvasTag");
-var c = canvas.getContext("2d"); //c means context
+//var c = canvas.getContext("2d"); //c means context
 var mousePos={x:0,y:0};
 
 canvas.addEventListener('mousemove', function(evt) {
@@ -206,7 +206,8 @@ function onScreen(X, Y){
 	}
 }
 
-function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+function roundRect(ctx, x, y, width, height, radius, fill, stroke,col) {
+  c.fillStyle = col;
   if (typeof stroke == 'undefined') {
 	stroke = true;
   }
