@@ -23,7 +23,7 @@ class Player{
 		this.frame = 1;
 		this.animationtimer= 10;
 		this.sworddist = 40;
-		this.sHeight = 10;
+		this.sHeight = 20;
 		this.jumpcount = this.sHeight;
 		this.isswinging = false;
 		this.swordpos = [];
@@ -57,11 +57,14 @@ class Player{
 		if (this.isswinging){
 			if (this.jumpcount > -this.sHeight){
 				if (this.jumpcount < 0){
-					this.sworddist -= (this.jumpcount ** 2) / 6;
+					this.sworddist -= (this.jumpcount ** 2) / 40;
 				}else{
-					this.sworddist += (this.jumpcount ** 2) / 6;
+					this.sworddist += (this.jumpcount ** 2) / 40;
 				}
 				this.jumpcount--;
+				if (this.sworddist < 40){
+					this.sworddist = 40;
+				}
 			}else{
 				this.isswinging = false;
 				this.jumpcount = this.sHeight;
@@ -112,7 +115,6 @@ class Player{
         if (!this.dash){
             this.dashcooldown-=4;
             this.dashbar += 0.4;
-            //console.log("1");
             if(this.dashcooldown <= 0){
                 this.dashcooldown = 400;
                 this.dashbar = 40
