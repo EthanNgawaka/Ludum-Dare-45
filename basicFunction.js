@@ -1,19 +1,20 @@
 var canvas = document.getElementById("canvasTag");
 var c = canvas.getContext("2d"); //c means context
-
-var inputPos={x:0,y:0};
+var mousePos={x:0,y:0};
 canvas.addEventListener('mousemove', function(evt) {
 	inputPos = getinputPos(canvas, evt);
 }, false);
 
-function getinputPos(canvas, evt) {
+canvas.addEventListener('mousemove', function(evt) {
+	mousePos = getMousePos(canvas, evt);
+}, false);
+function getMousePos(canvas, evt) {
 	var rect = canvas.getBoundingClientRect();
 	return {
 		x: evt.clientX - rect.left,
 		y: evt.clientY - rect.top
-	};
-};
-
+    };
+}
 canvas.addEventListener("ontouchmove", function(evt){
 	inputPos = getinputPos(canvas, evt);
 	evt.preventDefault();
@@ -24,7 +25,13 @@ canvas.addEventListener("ontouchstart", function(evt){
 	evt.preventDefault();
 	//console.log("touch start");
 }, false);
-
+function drawLine(x1,y1,x2,y2,col){
+    c.beginPath();
+    c.strokeStyle = col;
+    c.moveTo(x1,y1);
+    c.lineTo(x2,y2);
+    c.stroke();
+}
 var Keys = {"left":false, "right":false, "up":false, "down":false, "space":false, "esc":false,"x":false};
 
 document.addEventListener('keydown', function(event) {
@@ -86,20 +93,38 @@ document.addEventListener('keyup', function(event) {
 		}
 	}
 );
-
-mouseButtons = [false, false, false];
-document.addEventListener('mousedown', function(event){
-	mouseButtons[0] = true;
-});
-
 var liftedMouse = false;
 var liftedEsc = false;
-
-document.addEventListener('mouseup', function(event){
-	mouseButtons[0] = false;
-	liftedMouse = true;
+mouseButtons = [false, false, false];
+document.addEventListener('mousedown', function(event){
+	if (event.button == 0){
+        mouseButtons[0] = true;
+    }
+    if (event.button == 1){
+        mouseButtons[1] = true;
+    }
+    if (event.button == 2){
+        mouseButtons[2] = true;
+    }
 });
-
+document.addEventListener('mouseup', function(event){
+	if (event.button == 0){
+        mouseButtons[0] = false;
+    }
+    if (event.button == 1){
+        mouseButtons[1] = false;
+    }
+    if (event.button == 2){
+        mouseButtons[2] = false;
+    }
+});
+function drawCircle(x,y,r,col){
+    c.fillStyle = col;
+    c.beginPath();
+    c.arc(x,y,r,0,360,false);
+    c.closePath();
+    c.fill();
+}
 function AABBCollision(x1,y1,w1,h1,x2,y2,w2,h2){
     if (x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2){
         return true;

@@ -8,9 +8,10 @@ var tcampos = [0,0];
 var shakepos = [0,0];
 var shake = false;
 var shaketimes = 0;
+var wallsonscreen = [[100,100,100,100]];
 player = new Player();
 
-
+document.addEventListener('contextmenu', event => event.preventDefault());
 function update(){
 	//Camera handling//
     tcampos[0] += (Math.round(player.x) - campos[0] - W/2) / 5 + shakepos[0];
@@ -40,7 +41,10 @@ function update(){
 	drawRect(0,0,W,H,"white",true);
 	liftedMouse = false;
 	liftedEsc = false;
-	player.update();
+    player.update(wallsonscreen);
+    for (var x =0; x < wallsonscreen.length; x++){
+        drawRect(wallsonscreen[x][0]-campos[0],wallsonscreen[x][1]-campos[1],wallsonscreen[x][2],wallsonscreen[x][3],"black",true);
+    }
 }
 
 setInterval(update, 1000/60);
