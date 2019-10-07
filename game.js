@@ -33,14 +33,43 @@ class basicEnemy{
         this.invulnerable = false;
         this.counter = 0;
         this.hp = 2;
+        this.direction = "left"
+        this.state = "walk"
+        this.frame = 1;
+        this.attacking = false;
+        this.timer = 0;
+        this.sprite = new image("assets/goblin/"+this.direction+"/"+this.state+"/goblin"+this.frame+".png")
 
     }
     draw(){
-        console.log(this.x-campos[0],this.y+10-campos[1]);
-        drawRect(this.x-campos[0],this.y+10-campos[1],this.w/2*this.hp,10,"green",true);
-        drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,"red",true);
+        drawRect(this.x-campos[0],this.y-15-campos[1],(10*this.hp),10,"green",true);
+        //console.log("assets/goblin/"+this.direction+"/"+this.state+"/goblin"+this.frame+".png");
+        drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,"red",false);
+        this.sprite.drawImg(this.x-campos[0],this.y-campos[1],this.w,this.h,1);
+        this.sprite.img.src = "assets/goblin/"+this.direction+"/"+this.state+"/goblin"+this.frame+".png";
     }
     swarm(){
+        if (this.state == "walk"){
+            if (this.timer > 15){
+                this.timer = 0;
+                this.frame += 1;
+            }
+            
+            this.timer++;
+            if (this.frame > 3){
+                this.frame = 1;
+            }
+        }else{
+            if (this.timer > 15){
+                this.timer = 0;
+                this.frame += 1;
+            }
+            
+            this.timer++;
+            if (this.frame >5){
+                this.state = "walk"
+            }
+        }
         for (var x of swarmenemies){
             if (Math.hypot(this.x-x.x,this.y-x.y) > 100){
                 this.target = [x.x+Math.random()*30,x.y+Math.random()*30];
@@ -50,6 +79,11 @@ class basicEnemy{
             }
         }
         this.radians = Math.atan2(this.target[1]-this.y,this.target[0]-this.x);
+        if (!this.attacking&&Math.cos(this.radians) * this.speed > 0){
+            this.direction = "right";
+        }else if(!this.attacking){
+            this.direction = "left";
+        }
         this.x += Math.cos(this.radians) * this.speed;
         for (var x of swarmenemies){
             if (AABBCollision(this.x,this.y,this.w,this.h,x.x,x.y,x.w,x.h)&&!(this.x==x.x&&this.y==x.y)){
@@ -70,8 +104,18 @@ class basicEnemy{
                 }
             }
         }
-        if (AABBCollision(this.x,this.y,this.w,this.h,player.x,player.y,player.w,player.h)){
+        if (!AABBCollision(this.x,this.y,this.w,this.h,player.x,player.y,player.w,player.h)){
+            this.attacking = false;
+        }
+        if (AABBCollision(this.x,this.y,this.w,this.h,player.x,player.y,player.w,player.h)&&!player.invulnerable){
             player.hp-=1;
+            player.invulnerable = true;
+            this.frame = 1;
+            this.state = "attack"
+            this.attacking = true;
+        }else if (this.frame > 5){
+            this.state = "walk"
+            
         }
         if (AABBCollision(this.x,this.y,this.w,this.h,player.swordpos[0]+10,player.swordpos[1]+10,20,20)&&player.isswinging&&!this.invulnerable){
             this.hp --;

@@ -19,6 +19,7 @@ class Player{
 		this.color = "black";
 		this.dashbar = this.w;
 		this.sprite = new image("assets/player1.png");
+		this.sword = new image("assets/sword1.png");
 		this.hp = 10;
 		this.frame = 1;
 		this.animationtimer= 10;
@@ -27,6 +28,10 @@ class Player{
 		this.jumpcount = this.sHeight;
 		this.isswinging = false;
 		this.swordpos = [];
+		this.swordrads = 0;
+		this.invulnerable = false;
+		this.counter = 0;
+		
 	}
 	draw(){
 		this.animationtimer --;
@@ -34,7 +39,7 @@ class Player{
 		if (this.animationtimer < 0){
 			this.frame+=1;
 			
-			if (this.frame > 4){
+			if (this.frame > 6){
 				this.frame = 1;
 				
 			}
@@ -47,10 +52,16 @@ class Player{
 		//drawRect(this.x-campos[0],this.y-campos[1],this.w,this.h,this.color,true);
 	}
 	input(walls){
+		if (this.invulnerable){
+			this.counter ++;
+            if (this.counter >= 100){
+				this.invulnerable = false;
+				this.counter = 0;
+            }
+        }
 		this.radians = Math.atan2(mousePos.y-20+campos[1]-this.y,mousePos.x-20+campos[0]-this.x);
 		this.swordpos = [this.x + Math.cos(this.radians)*this.sworddist,this.y+ Math.sin(this.radians)*this.sworddist];
-		drawRect(this.swordpos[0]+10-campos[0],this.swordpos[1]+10-campos[1],20,20,"grey",true);
-	
+		this.sword.drawImg(this.swordpos[0]+10-campos[0],this.swordpos[1]+10-campos[1],20,20);
 		if(mouseButtons[0] && !this.isswinging){
 			this.isswinging = true;
 		}
